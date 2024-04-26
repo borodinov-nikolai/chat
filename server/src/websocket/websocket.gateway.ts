@@ -1,11 +1,15 @@
-import { ConnectedSocket, MessageBody, WebSocketGateway, WsResponse } from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway} from '@nestjs/websockets';
 import { WebsocketService } from './websocket.service';
+import { emit } from 'process';
 import { Socket } from 'dgram';
 
-@WebSocketGateway()
+
+@WebSocketGateway({cors: true})
 export class WebsocketGateway {
-  constructor(private readonly websocketService: WebsocketService) {}
-  handleEvent(@ConnectedSocket() client: Socket, @MessageBody() data: unknown) {
-    return data
+  @SubscribeMessage('message')
+  HandleEvent(@ConnectedSocket() client: Socket , @MessageBody() data: string) {
+    console.log(data) 
+
+    return 'принял'
   }
 }

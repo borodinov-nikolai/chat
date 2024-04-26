@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 
-const useWebSocket = () => {
-  const [socket, setSocket] = useState<any>();
+
+const useWebSocket = (url: string) => {
+  const [socket, setSocket] = useState<Socket>();
+  
   useEffect(() => {
-    const newSocket = io("http://localhost:5000");
+    const newSocket = io(url);
+    newSocket.on('connect', ()=> console.log( 'websocket id ' + newSocket.id))
+    newSocket.on('disconnect', ()=> console.log('websocket disconect'))
     setSocket(newSocket);
     return () => {
       newSocket.disconnect();
     };
   }, []);
+  
   return socket;
 };
 
